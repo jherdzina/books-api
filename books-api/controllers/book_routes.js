@@ -3,6 +3,7 @@ const books = express.Router()
 const Book = require('../models/books')
 
 books.get('/seed', (req, res) => {
+  console.log('book model', Book)
   Book.insertMany([
     {
       "title": "The Shinobi Initiative",
@@ -33,12 +34,16 @@ books.get('/seed', (req, res) => {
       "imageURL": "https://imgur.com/qYLKtPH.jpeg"
     }
   ])
-    .then(res.status(200).json({
-          message: 'Seed successful'
-    }))
-    .catch(res.status(400).json({
+    .then(() => {
+      return res.status(200).json({
+        message: 'Seed successful'
+  })
+    })
+    .catch((err) => {
+      return res.status(400).json({
         message: 'Seed unsuccessful'
-    }))
+    })
+    })
 })
 
 books.get('/:id', (req, res) => {
@@ -52,10 +57,12 @@ books.get('/:id', (req, res) => {
 })
 
 books.get('/', (req, res) => {
+  console.log("Book")
   Book.find().then(foundBooks => {
+    console.log("Books", foundBooks)
     res.json(foundBooks)
   }).catch(err => {
-    res.json("Error")
+    res.json("Error", err)
   })
 
 })
